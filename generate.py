@@ -8,20 +8,20 @@ import numpy as np
 import random
 import torch, torchvision
 import subprocess
-from audio import audio
-import face_detection
+from .audio import audio
+from .face_detection import LandmarksType, FaceAlignment
 from tqdm import tqdm
 
-from guided_diffusion import dist_util, logger
-from guided_diffusion.resample import create_named_schedule_sampler
-from guided_diffusion.script_util import (
+from .guided_diffusion.guided_diffusion import dist_util, logger
+from .guided_diffusion.guided_diffusion.resample import create_named_schedule_sampler
+from .guided_diffusion.guided_diffusion.script_util import (
     tfg_model_and_diffusion_defaults,
     tfg_create_model_and_diffusion,
     args_to_dict,
     add_dict_to_argparser,
 )
 
-from guided_diffusion.tfg_data_util import (
+from .guided_diffusion.guided_diffusion.tfg_data_util import (
     tfg_process_batch,
 ) 
 
@@ -328,7 +328,7 @@ def main():
         model.convert_to_fp16()
     model.eval()
 
-    detector = face_detection.FaceAlignment(face_detection.LandmarksType._2D, flip_input=False, device='cuda' if torch.cuda.is_available() else 'cpu')
+    detector = FaceAlignment(LandmarksType._2D, flip_input=False, device='cuda' if torch.cuda.is_available() else 'cpu')
 
     if args.generate_from_filelist:
         generate_from_filelist(args.test_video_dir, args.filelist, model, diffusion, detector,  args)
